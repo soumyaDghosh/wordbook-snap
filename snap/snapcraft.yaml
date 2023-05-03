@@ -15,6 +15,9 @@ architectures:
   - build-on: amd64
   - build-on: arm64
   - build-on: armhf
+layouts:
+  /usr/lib/x86_64-linux-gnu/espeak-ng-data:
+    bind: $SNAP/usr/lib/x86_64-linux-gnu/espeak-ng-data
 parts:
   pcaudiolib:
     plugin: autotools
@@ -35,7 +38,6 @@ parts:
     stage-packages:
       - espeak-ng-espeak
       - espeak-ng-data
-      - espeak-data
     override-build: |
       craftctl default
       pip install --target=$CRAFT_PART_INSTALL/snap/wordbook/current/usr/lib/python3/dist-packages wn==0.6.1
