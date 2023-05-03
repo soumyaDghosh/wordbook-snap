@@ -16,7 +16,14 @@ architectures:
   - build-on: arm64
   - build-on: armhf
 parts:
+  pcaudiolib:
+    plugin: autotools
+    source: https://github.com/espeak-ng/pcaudiolib.git
+    source-tag: 1.2
+    autotools-configure-parameters:
+      - --prefix=/usr
   wordbook:
+    after: [ pcaudiolib ]
     # See 'snapcraft plugins'
     plugin: meson
     source: https://github.com/mufeedali/Wordbook.git
@@ -27,12 +34,27 @@ parts:
       snap/wordbook/current: .
     stage-packages:
       - espeak-ng-espeak
+      - espeak-ng-data
+      - espeak-data
     override-build: |
       craftctl default
       pip install --target=$CRAFT_PART_INSTALL/snap/wordbook/current/usr/lib/python3/dist-packages wn==0.6.1
       sed -e '1c#!/usr/bin/env python3' -i "${CRAFT_PART_INSTALL}/snap/wordbook/current/usr/bin/wordbook"
     parse-info: [ usr/share/appdata/com.github.fushinari.Wordbook.appdata.xml ]
-    
+  cleanup:
+    after:  # Make this part run last; list all your other parts here
+      - wordbook
+      - pcaudiolib
+    plugin: nil
+    build-snaps:  # List all content-snaps and base snaps you're using here
+      - core22
+      - gtk-common-themes
+      - gnome-42-2204
+    override-prime: |
+      set -eux
+      for snap in "core22" "gtk-common-themes" "gnome-42-2204"; do  # List all content-snaps and base snaps you're using here
+          cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
+      done
 slots:
   wordbook:
     interface: dbus
