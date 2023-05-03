@@ -69,6 +69,7 @@ apps:
       PYTHONPATH: $SNAP/usr/lib/python3/dist-packages:$PYTHONPATH
     extensions: [ gnome ]
     plugs:
+      - alsa
       - audio-playback
       - network
       - network-observe
