@@ -15,7 +15,7 @@ architectures:
   - build-on: amd64
   - build-on: arm64
   - build-on: armhf
-layouts:
+layout:
   /usr/lib/x86_64-linux-gnu/espeak-ng-data:
     bind: $SNAP/usr/lib/x86_64-linux-gnu/espeak-ng-data
 parts:
