@@ -58,7 +58,7 @@ slots:
   wordbook:
     interface: dbus
     bus: session
-    name: com.github.fushinari.Wordbook
+    name: dev.mufeed.Wordbook
 apps:
   wordbook:
     command: usr/bin/wordbook
