@@ -1,13 +1,13 @@
-name: wordbook # you probably want to 'snapcraft register <name>'
-base: core22 # the base snap is the execution environment for this snap
+name: wordbook 
+base: core22
 adopt-info: wordbook
 license: GPL-3.0
 issues: https://github.com/soumyaDghosh/wordbook-snap/issues
 source-code: https://github.com/mufeedali/Wordbook
 website: https://github.com/soumyaDghosh/wordbook-snap
 compression: lzo
-grade: stable # must be 'stable' to release into candidate/stable channels
-confinement: strict # use 'strict' once you have the right plugs and slots
+grade: stable 
+confinement: strict 
 title: Wordbook
 architectures:
   - build-on: amd64
@@ -17,6 +17,23 @@ layout:
   /usr/lib/$CRAFT_ARCH_TRIPLET/espeak-ng-data:
     bind: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET/espeak-ng-data
 parts:
+  wn:
+    plugin: python
+    source: https://github.com/goodmami/wn.git
+    source-tag: 'v0.9.4'
+    build-environment:
+      - PYTHONPATH: ""
+      - PATH: ${CRAFT_PART_INSTALL}/bin:${PATH}
+    prime:
+      - -usr/bin/activate*
+      - -usr/bin/Activate.ps1
+      - -usr/bin/python*
+      - -usr/bin/pip*
+      - -pyvenv.cfg
+    organize: 
+      bin: usr/bin
+      lib/python3.10/site-packages: usr/lib/python3/dist-packages
+
   pcaudiolib:
     plugin: autotools
     source: https://github.com/espeak-ng/pcaudiolib.git
@@ -24,7 +41,7 @@ parts:
     autotools-configure-parameters:
       - --prefix=/usr
   wordbook:
-    after: [ pcaudiolib ]
+    after: [ pcaudiolib, wn ]
     plugin: meson
     source: https://github.com/mufeedali/Wordbook.git
     source-tag: '0.4.0'
@@ -37,15 +54,14 @@ parts:
       - espeak-ng-data
     override-build: |
       craftctl default
-      pip install --target=$CRAFT_PART_INSTALL/snap/wordbook/current/usr/lib/python3/dist-packages wn==0.6.1
       sed -e '1c#!/usr/bin/env python3' -i "${CRAFT_PART_INSTALL}/snap/wordbook/current/usr/bin/wordbook"
     parse-info: [ usr/share/appdata/dev.mufeed.Wordbook.metainfo.xml ]
   cleanup:
-    after:  # Make this part run last; list all your other parts here
+    after:  
       - wordbook
       - pcaudiolib
     plugin: nil
-    build-snaps:  # List all content-snaps and base snaps you're using here
+    build-snaps:  
       - core22
       - gtk-common-themes
       - gnome-42-2204
