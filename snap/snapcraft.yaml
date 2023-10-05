@@ -11,19 +11,24 @@ confinement: strict
 title: Wordbook
 architectures:
   - build-on: amd64
-  - build-on: arm64
-  - build-on: armhf
+  # - build-on: arm64
+  # - build-on: armhf
 layout:
   /usr/lib/$CRAFT_ARCH_TRIPLET/espeak-ng-data:
     bind: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET/espeak-ng-data
 parts:
-  wn:
+  wnpython:
     plugin: python
     source: https://github.com/goodmami/wn.git
     source-tag: 'v0.9.4'
     build-environment:
       - PYTHONPATH: ""
       - PATH: ${CRAFT_PART_INSTALL}/bin:${PATH}
+    organize: 
+      bin: usr/bin
+      lib/python3.10/site-packages: usr/lib/python3/dist-packages
+    prime:
+      - usr/lib/python3/dist-packages
     
 
   pcaudiolib:
@@ -32,6 +37,11 @@ parts:
     source-tag: '1.2'
     autotools-configure-parameters:
       - --prefix=/usr
+      - --libdir=/usr/lib/$CRAFT_ARCH_TRIPLET
+    prime:
+      - -usr/include
+      - -usr/share
+    
   wordbook:
     after: [ pcaudiolib, wn ]
     plugin: meson
@@ -41,19 +51,45 @@ parts:
       - --prefix=/snap/wordbook/current/usr
     organize:
       snap/wordbook/current: .
+      usr/local/bin: usr/bin
+      usr/local/lib: usr/lib
+      usr/local/lib/python3.10/dist-packages: usr/lib/python3/dist-packages
     stage-packages:
       - espeak-ng-espeak
       - espeak-ng-data
     override-build: |
       craftctl default
+      pip install --prefix=$CRAFT_PART_INSTALL/usr wn==0.9.4
+      sed -e '1c#!/usr/bin/env python3' -i $CRAFT_PART_INSTALL/usr/local/bin/*
       sed -e '1c#!/usr/bin/env python3' -i "${CRAFT_PART_INSTALL}/snap/wordbook/current/usr/bin/wordbook"
     parse-info: [ usr/share/appdata/dev.mufeed.Wordbook.metainfo.xml ]
-  
+    prime:
+      - -etc
+      - -include
+      - -usr/local
+  deps:
+    plugin: nil
+    stage-packages:
+      - espeak-ng-data
+      - espeak-ng-espeak
+    prime:
+      - usr/lib/*/espeak-ng-data
+      - usr/bin/espeak
+      - usr/bin/speak
+      - usr/bin/espeak-ng
+      - usr/bin/speak-ng
+      - usr/lib/*/libsonic.so.0
+      - usr/lib/*/libsonic.so.0.2.0
+      - usr/lib/*/libespeak-ng.so.1
+      - usr/lib/*/libespeak-ng.so.1.1.49
+
 slots:
   wordbook:
     interface: dbus
     bus: session
     name: dev.mufeed.Wordbook
+
+
 apps:
   wordbook:
     command: usr/bin/wordbook
