@@ -48,20 +48,7 @@ parts:
       craftctl default
       sed -e '1c#!/usr/bin/env python3' -i "${CRAFT_PART_INSTALL}/snap/wordbook/current/usr/bin/wordbook"
     parse-info: [ usr/share/appdata/dev.mufeed.Wordbook.metainfo.xml ]
-  cleanup:
-    after:  
-      - wordbook
-      - pcaudiolib
-    plugin: nil
-    build-snaps:  
-      - core22
-      - gtk-common-themes
-      - gnome-42-2204
-    override-prime: |
-      set -eux
-      for snap in "core22" "gtk-common-themes" "gnome-42-2204"; do  # List all content-snaps and base snaps you're using here
-          cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
-      done
+  
 slots:
   wordbook:
     interface: dbus
