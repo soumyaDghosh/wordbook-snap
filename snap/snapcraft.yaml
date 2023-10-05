@@ -11,8 +11,8 @@ confinement: strict
 title: Wordbook
 architectures:
   - build-on: amd64
-  # - build-on: arm64
-  # - build-on: armhf
+  - build-on: arm64
+  - build-on: armhf
 layout:
   /usr/lib/$CRAFT_ARCH_TRIPLET/espeak-ng-data:
     bind: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET/espeak-ng-data
@@ -72,7 +72,7 @@ parts:
     stage-packages:
       - espeak-ng-data
       - espeak-ng-espeak
-    prime:
+    stage:
       - usr/lib/*/espeak-ng-data
       - usr/bin/espeak
       - usr/bin/speak
