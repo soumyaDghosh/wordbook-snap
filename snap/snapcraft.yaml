@@ -82,6 +82,7 @@ parts:
       - usr/lib/*/libsonic.so.0.2.0
       - usr/lib/*/libespeak-ng.so.1
       - usr/lib/*/libespeak-ng.so.1.1.49
+      - -usr/lib/*/libpcaudio*
 
 slots:
   wordbook:
