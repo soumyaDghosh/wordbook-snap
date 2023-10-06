@@ -16,21 +16,7 @@ architectures:
 layout:
   /usr/lib/$CRAFT_ARCH_TRIPLET/espeak-ng-data:
     bind: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET/espeak-ng-data
-parts:
-  wnpython:
-    plugin: python
-    source: https://github.com/goodmami/wn.git
-    source-tag: 'v0.9.4'
-    build-environment:
-      - PYTHONPATH: ""
-      - PATH: ${CRAFT_PART_INSTALL}/bin:${PATH}
-    organize: 
-      bin: usr/bin
-      lib/python3.10/site-packages: usr/lib/python3/dist-packages
-    prime:
-      - usr/lib/python3/dist-packages
-    
-
+parts:  
   pcaudiolib:
     plugin: autotools
     source: https://github.com/espeak-ng/pcaudiolib.git
@@ -43,7 +29,7 @@ parts:
       - -usr/share
     
   wordbook:
-    after: [ pcaudiolib, wn ]
+    after: [ pcaudiolib ]
     plugin: meson
     source: https://github.com/mufeedali/Wordbook.git
     source-tag: '0.4.0'
