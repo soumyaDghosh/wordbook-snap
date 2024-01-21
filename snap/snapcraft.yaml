@@ -21,6 +21,7 @@ parts:
     plugin: autotools
     source: https://github.com/espeak-ng/pcaudiolib.git
     source-tag: '1.2'
+    source-depth: 1
     autotools-configure-parameters:
       - --prefix=/usr
       - --libdir=/usr/lib/$CRAFT_ARCH_TRIPLET
@@ -33,6 +34,7 @@ parts:
     plugin: meson
     source: https://github.com/mufeedali/Wordbook.git
     source-tag: '0.4.0'
+    source-depth: 1
     meson-parameters:
       - --prefix=/snap/wordbook/current/usr
     organize:
